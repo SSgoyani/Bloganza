@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 5000;
 
 // CORS Configuration
 const corsOptions = {
-  origin: ['http://localhost:3000', 'https://your-frontend-url.vercel.app'], // Add your frontend URLs here
+  origin: ['http://localhost:3000', 'https://bloganza.netlify.app/'], // Add your frontend URLs here
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
