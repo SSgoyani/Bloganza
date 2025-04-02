@@ -4,13 +4,14 @@ import BlogCard from '../components/BlogCard';
 
 // Configure axios defaults
 axios.defaults.withCredentials = true;
-axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
+axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 const Home = () => {
   const [blogs, setBlogs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -19,14 +20,14 @@ const Home = () => {
         const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/blogs?page=${currentPage}`, {
           withCredentials: true,
           headers: {
-            'Content-Type': 'application/json',
-            'Access-Control-Allow-Origin': '*'
+            'Content-Type': 'application/json'
           }
         });
         setBlogs(response.data.blogs);
         setTotalPages(response.data.totalPages);
       } catch (error) {
         console.error('Error fetching blogs:', error);
+        setError('Failed to fetch blogs. Please try again later.');
       } finally {
         setLoading(false);
       }
