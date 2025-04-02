@@ -4,6 +4,7 @@ import BlogCard from '../components/BlogCard';
 
 // Configure axios defaults
 axios.defaults.withCredentials = true;
+axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 
 const Home = () => {
   const [blogs, setBlogs] = useState([]);
@@ -15,7 +16,13 @@ const Home = () => {
     const fetchBlogs = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/blogs?page=${currentPage}`);
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/blogs?page=${currentPage}`, {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+          }
+        });
         setBlogs(response.data.blogs);
         setTotalPages(response.data.totalPages);
       } catch (error) {
