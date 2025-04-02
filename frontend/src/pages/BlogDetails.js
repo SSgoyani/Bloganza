@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useAuth } from '../context/AuthContext';
 
 const BlogDetails = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
-  const { user } = useAuth();
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -26,23 +23,6 @@ const BlogDetails = () => {
 
     fetchBlog();
   }, [id]);
-
-  const handleDelete = async () => {
-    if (!window.confirm('Are you sure you want to delete this blog post?')) {
-      return;
-    }
-
-    try {
-      const token = localStorage.getItem('token');
-      await axios.delete(`${process.env.REACT_APP_API_URL}/api/blogs/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      navigate('/');
-    } catch (error) {
-      setError('Failed to delete blog post');
-      console.error('Error deleting blog:', error);
-    }
-  };
 
   if (loading) {
     return (
