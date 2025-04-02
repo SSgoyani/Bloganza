@@ -16,15 +16,12 @@ const PORT = process.env.PORT || 5000;
 
 // CORS Configuration
 const corsOptions = {
-  origin: [
-    'http://localhost:3000',
-    'https://bloganza.netlify.app',
-    'https://bloganza.netlify.app/',
-    'https://*.netlify.app'
-  ],
+  origin: ['https://bloganza.netlify.app', 'http://localhost:3000'],
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
+  allowedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Origin'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range'],
+  maxAge: 600
 };
 
 // Middleware

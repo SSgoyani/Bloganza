@@ -3,6 +3,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const User = require('../models/User');
+const auth = require('../middleware/auth');
 
 // Register route
 router.post('/register', [
@@ -34,7 +35,14 @@ router.post('/register', [
       { expiresIn: '1h' }
     );
 
-    res.status(201).json({ token });
+    // Send user data without password
+    const userData = {
+      _id: user._id,
+      email: user.email,
+      createdAt: user.createdAt
+    };
+
+    res.status(201).json({ token, user: userData });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });
@@ -73,9 +81,33 @@ router.post('/login', [
       { expiresIn: '1h' }
     );
 
-    res.json({ token });
+    // Send user data without password
+    const userData = {
+      _id: user._id,
+      email: user.email,
+      createdAt: user.createdAt
+    };
+
+    console.log('Sending login response with user data:', userData);
+    res.json({ token, user: userData });
   } catch (error) {
-    console.error(error);
+    console.error('Login error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Get current user route
+router.get('/me', auth, async (req, res) => {
+  try {
+    console.log('User ID from token:', req.user.userId);
+    const user = await User.findById(req.user.userId).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    console.log('Found user:', user);
+    res.json(user);
+  } catch (error) {
+    console.error('Error in /me route:', error);
     res.status(500).json({ message: 'Server error' });
   }
 });
