@@ -5,6 +5,9 @@ import axios from 'axios';
 axios.defaults.withCredentials = true;
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 
+// Log the API URL to verify it's correct
+console.log('API URL:', process.env.REACT_APP_API_URL);
+
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
