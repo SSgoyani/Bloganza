@@ -16,10 +16,10 @@ const PORT = process.env.PORT || 5000;
 
 // CORS Configuration
 const corsOptions = {
-  origin: ['https://bloganza.netlify.app'],
+  origin: true, // Allow all origins temporarily for debugging
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Origin'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Origin', 'X-Requested-With', 'Accept'],
   exposedHeaders: ['Content-Range', 'X-Content-Range'],
   maxAge: 600
 };
@@ -28,9 +28,36 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
+// Add a pre-flight OPTIONS handler
+app.options('*', cors(corsOptions));
+
+// Root route handler
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Welcome to Bloganza API',
+    version: '1.0.0',
+    endpoints: {
+      auth: '/api/auth',
+      blogs: '/api/blogs'
+    }
+  });
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/blogs', blogRoutes);
+
+// Catch-all route handler for undefined routes
+app.use('*', (req, res) => {
+  res.status(404).json({
+    message: 'Route not found',
+    availableRoutes: {
+      root: '/',
+      auth: '/api/auth',
+      blogs: '/api/blogs'
+    }
+  });
+});
 
 // MongoDB Connection
 const MONGODB_URI = process.env.MONGODB_URI;
