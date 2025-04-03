@@ -93,9 +93,13 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+// Set server timeout values
+server.keepAliveTimeout = 120000;
+server.headersTimeout = 120000;
 
 // Handle server errors
 server.on('error', (error) => {
