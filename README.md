@@ -5,9 +5,9 @@ A modern, full-stack blog application built with React, Node.js, Express, and Mo
 ## Features
 
 - User Authentication (Login/Register)
-- Create, Read, Update, and Delete Blog Posts
+- Create and Read Blog Posts
 - Responsive Design with Tailwind CSS
-- Pagination for Blog Listings
+- Pagination for Blog Listings (currently 3 blogs per page)
 - Modern UI with Material-UI Components
 - Protected Routes for Authenticated Users
 - Real-time Error Handling
@@ -39,7 +39,7 @@ A modern, full-stack blog application built with React, Node.js, Express, and Mo
 
 1. Clone the repository:
 ```bash
-git clone <your-repository-url>
+git clone <repo_url>
 cd blog-app
 ```
 
@@ -147,8 +147,6 @@ blog-app/
 - GET /api/blogs - Get all blogs (paginated)
 - GET /api/blogs/:id - Get a single blog
 - POST /api/blogs - Create a new blog
-- PUT /api/blogs/:id - Update a blog
-- DELETE /api/blogs/:id - Delete a blog
 
 ## Contributing
 
@@ -158,12 +156,6 @@ blog-app/
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## License
+## Live Project URL
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Contact
-
-Your Name - [@yourtwitter](https://twitter.com/yourtwitter)
-
-Project Link: [https://github.com/yourusername/blog-app](https://github.com/yourusername/blog-app) 
+https://bloganza.netlify.app/ 
