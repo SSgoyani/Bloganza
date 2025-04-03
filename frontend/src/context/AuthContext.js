@@ -61,18 +61,29 @@ export const AuthProvider = ({ children }) => {
       console.log('Checking auth status...');
       const token = localStorage.getItem('token');
       if (token) {
-        const response = await api.get('/api/auth/me', {
-          withCredentials: true,
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
+        // Set a timeout to prevent infinite loading
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('Auth check timed out')), 5000);
         });
+
+        // Race between the auth check and the timeout
+        const response = await Promise.race([
+          api.get('/api/auth/me', {
+            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          }),
+          timeoutPromise
+        ]);
+
         console.log('Auth check response:', response.data);
         setUser(response.data);
       }
     } catch (error) {
       console.error('Auth check failed:', error);
+      // If the auth check fails, clear the token and user state
       localStorage.removeItem('token');
       delete api.defaults.headers.common['Authorization'];
       setUser(null);

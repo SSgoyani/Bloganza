@@ -17,9 +17,15 @@ const CreateBlog = () => {
   // Redirect if not authenticated
   useEffect(() => {
     console.log('CreateBlog useEffect running, user:', user);
-    if (!user) {
-      console.log('No user found, redirecting to login');
+    const token = localStorage.getItem('token');
+    
+    if (!user && !token) {
+      console.log('No user and no token found, redirecting to login');
       navigate('/login');
+    } else if (!user && token) {
+      console.log('Token found but no user, waiting for auth check...');
+      // Wait for auth check to complete
+      return;
     }
   }, [user, navigate]);
 
@@ -47,9 +53,11 @@ const CreateBlog = () => {
 
   // Show loading state while checking authentication
   if (!user) {
+    console.log('No user, showing loading state');
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+        <p className="ml-3 text-gray-600">Loading...</p>
       </div>
     );
   }
