@@ -6,7 +6,35 @@ axios.defaults.withCredentials = true;
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 // Log the API URL to verify it's correct
-console.log('API URL:', process.env.REACT_APP_API_URL);
+const API_URL = process.env.REACT_APP_API_URL;
+console.log('Current environment:', process.env.NODE_ENV);
+console.log('API URL:', API_URL);
+
+if (!API_URL) {
+  console.error('REACT_APP_API_URL is not set!');
+}
+
+// Create axios instance with default config
+const api = axios.create({
+  baseURL: API_URL,
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  }
+});
+
+// Add request interceptor to handle CORS
+api.interceptors.request.use(
+  (config) => {
+    // Remove any existing CORS headers
+    delete config.headers['Access-Control-Allow-Origin'];
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 const AuthContext = createContext(null);
 
@@ -20,7 +48,7 @@ export const AuthProvider = ({ children }) => {
     console.log('Token from localStorage:', token);
     
     if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       checkAuth();
     } else {
       console.log('No token found, setting loading to false');
@@ -33,7 +61,7 @@ export const AuthProvider = ({ children }) => {
       console.log('Checking auth status...');
       const token = localStorage.getItem('token');
       if (token) {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/auth/me`, {
+        const response = await api.get('/api/auth/me', {
           withCredentials: true,
           headers: {
             Authorization: `Bearer ${token}`,
@@ -46,7 +74,7 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error('Auth check failed:', error);
       localStorage.removeItem('token');
-      delete axios.defaults.headers.common['Authorization'];
+      delete api.defaults.headers.common['Authorization'];
       setUser(null);
     } finally {
       setLoading(false);
@@ -56,13 +84,14 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       console.log('Attempting login...');
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/auth/login`,
+      const response = await api.post(
+        '/api/auth/login',
         { email, password },
         {
           withCredentials: true,
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
           }
         }
       );
@@ -76,7 +105,7 @@ export const AuthProvider = ({ children }) => {
 
       // Store token
       localStorage.setItem('token', token);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       
       // Set user data directly from login response
       if (userData) {
@@ -111,13 +140,14 @@ export const AuthProvider = ({ children }) => {
   const register = async (email, password) => {
     try {
       console.log('Attempting registration...');
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/auth/register`,
+      const response = await api.post(
+        '/api/auth/register',
         { email, password },
         {
           withCredentials: true,
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
           }
         }
       );
@@ -131,7 +161,7 @@ export const AuthProvider = ({ children }) => {
 
       // Store token
       localStorage.setItem('token', token);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       
       // Set user data
       if (userData) {
@@ -153,7 +183,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     console.log('Logging out...');
     localStorage.removeItem('token');
-    delete axios.defaults.headers.common['Authorization'];
+    delete api.defaults.headers.common['Authorization'];
     setUser(null);
   };
 

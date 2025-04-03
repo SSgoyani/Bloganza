@@ -11,6 +11,7 @@ const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
+  // const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -26,7 +27,7 @@ const Home = () => {
         setTotalPages(response.data.totalPages);
       } catch (error) {
         console.error('Error fetching blogs:', error);
-        setError('Failed to fetch blogs. Please try again later.');
+        // setError('Failed to fetch blogs. Please try again later.');
       } finally {
         setLoading(false);
       }
