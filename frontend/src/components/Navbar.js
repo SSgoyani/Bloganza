@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import Logo from '../assets/bloganza_logo_bg.png';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -20,9 +21,14 @@ const Navbar = () => {
     <nav className="bg-white shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
-          <div className="flex">
+          <div className="flex items-center">
             <Link to="/" className="flex items-center">
-              <span className="text-2xl font-bold text-green-600">Bloganza</span>
+              <img 
+                src={Logo} 
+                alt="Bloganza Logo" 
+                className="h-16 w-auto object-contain" 
+                style={{ maxHeight: '50px' }}
+              />
             </Link>
           </div>
 
