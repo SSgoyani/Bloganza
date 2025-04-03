@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import { api } from '../context/AuthContext'; // Import the configured api instance
 
 const CreateBlog = () => {
+  console.log('CreateBlog component rendering');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [error, setError] = useState('');
@@ -11,33 +12,47 @@ const CreateBlog = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
+  console.log('Current user in CreateBlog:', user);
+
+  // Redirect if not authenticated
+  useEffect(() => {
+    console.log('CreateBlog useEffect running, user:', user);
+    if (!user) {
+      console.log('No user found, redirecting to login');
+      navigate('/login');
+    }
+  }, [user, navigate]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
     try {
-      const token = localStorage.getItem('token');
-      await axios.post(
-        `${process.env.REACT_APP_API_URL}/api/blogs`,
-        {
-          title,
-          content,
-          author: user._id
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
+      const response = await api.post('/api/blogs', {
+        title,
+        content,
+        author: user._id
+      });
+      
+      console.log('Blog created:', response.data);
       navigate('/');
     } catch (error) {
+      console.error('Error creating blog:', error);
       setError(error.response?.data?.message || 'Failed to create blog post');
     } finally {
       setLoading(false);
     }
   };
+
+  // Show loading state while checking authentication
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8">

@@ -15,7 +15,7 @@ if (!API_URL) {
 }
 
 // Create axios instance with default config
-const api = axios.create({
+export const api = axios.create({
   baseURL: API_URL,
   withCredentials: true,
   headers: {
