@@ -96,8 +96,8 @@ The application will be available at:
    - Set environment variables
    - Deploy the service
 
-### Frontend (Vercel)
-1. Deploy to Vercel:
+### Frontend (Netlify)
+1. Deploy to Netlify:
    - Connect your GitHub repository
    - Set environment variables
    - Deploy the project
